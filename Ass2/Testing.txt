@@ -1,0 +1,71 @@
+Testing architecture - VSCode IDE using JavaSE-21 and bash terminal
+
+Test cases -
+    Test 1: Can a Content Server and client connect to the Aggregation server?
+        Steps:
+            run AggregationServer.java
+            run ContentServer.java
+            run Client.java
+        Result:
+            Content Server and Client connected to the Aggregation Server
+
+    Test 2: Can I send a .json file from a Content Server to the Aggregation Server 
+            to a Client?
+        Steps:
+            run AggregationServer.java
+            run ContentServer.java with arguments "127.0.0.2", "4567" and "Input.txt"
+            run client.java
+            have ContentServer request a PUT to AggregationServer
+            Have Client tequest a GET to AggregationServer
+        Result:
+            The "Input.txt" is sent to both the Aggregations Server and the Client as 
+            a .json file
+
+    Test 3: Does the Content Server generate a .json file from the "Input.txt"?
+        Steps:
+            run ContentServer.java with arguments "127.0.0.2", "4567" and "Input.txt"
+        Result:
+            A file named "ContentServer.json" is generated based on the "Input.txt" file
+
+    Test 4: Can multiple Content Servers and clients connect to, PUT and GET from 
+            one Aggregation server?
+        Steps:
+            run AggregationServer.java once
+            run ContentServer.java twice and have each PUT once
+            run Client.java three times and have each GET once
+        Result:
+            Content Servers are able to PUT and Clients are able to GET .json files correctly. 
+            However, only one copy of each block of json data is stored in the Aggregation 
+            server.
+
+    Test 5: Does the Lamport Clock keep track of ticks?
+        Steps:
+            run AggregationServer.java
+            run ContentServer.java
+            run Client.javac
+            Use the command "test" in the terminal of each program in the following order...
+                Aggregation -> Content -> Aggregation -> Client -> Aggregation -> Aggregation 
+                -> Content -> Client -> Content
+        Result:
+            The ticks for each program is correctly kept track of
+
+    Test 6: Does the Aggregation Server remove .json files from Content Server it has not 
+            communicated with in the last 30 seconds?
+        Steps:
+            run AggregationServer.java
+            run ContentServer.java
+            Apply a "PUT" with Content Server
+            Wait 15 seconds and use command "test" in terminal of ContentServer.java
+            Wait 30 seconds
+        Result:
+            The AggregationSErver.json is cleared only after 30 of inactivity from 
+            the Content Server 
+
+    Test 7: Does the Content Server and Client retry on errors?
+        Steps:
+            run ContentServer.java
+            run Client.javac
+            run AggregationServer.java
+            wait 5 seconds
+        Result:
+            Content Server and Client successfully connect to Aggregation Server
